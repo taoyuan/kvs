@@ -17,7 +17,7 @@ Simple key-value store facade for node.
 
 ## Usage Examples
 
-### Single Cache
+### Single Store
 ```js
 var kvs = require('kvs');
 
