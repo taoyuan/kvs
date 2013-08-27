@@ -30,18 +30,22 @@ module.exports = function (getStore) {
     function testKvs(name, genValue, options) {
 
         context('bucket ' + name, function () {
+            var store;
             var bucket;
             var key;
             var value;
 
             beforeEach(function () {
-                bucket = getStore().crateBucket(support.random.string(), options);
+                store = getStore();
+                bucket = store.crateBucket(support.random.string(), options);
                 key = support.random.string(20);
                 value = genValue();
             });
 
             afterEach(function (done) {
-                bucket.clear(done);
+                bucket.clear(function () {
+                    store.close(done);
+                });
             });
 
             describe('get() and set()', function () {
