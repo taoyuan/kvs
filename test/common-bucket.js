@@ -37,7 +37,7 @@ module.exports = function (getStore) {
 
             beforeEach(function () {
                 store = getStore();
-                bucket = store.crateBucket(support.random.string(), options);
+                bucket = store.createBucket(support.random.string(), options);
                 key = support.random.string(20);
                 value = genValue();
             });

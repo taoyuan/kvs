@@ -26,11 +26,11 @@ describe("Memory adapter get with load", function () {
         store = getStore();
         ttl = 0.1;
         memory_adapter = store.adapter;
-        memory_stub = memory_adapter.crateBucket({ttl: ttl});
+        memory_stub = memory_adapter.createBucket({ttl: ttl});
 
-        sinon.stub(memory_adapter, 'crateBucket').returns(memory_stub);
+        sinon.stub(memory_adapter, 'createBucket').returns(memory_stub);
 
-        bucket = store.crateBucket({
+        bucket = store.createBucket({
             ttl: ttl,
             load: function (name, cb) {
                 methods.getWidget(name, cb);
@@ -41,7 +41,7 @@ describe("Memory adapter get with load", function () {
     });
 
     afterEach(function (done) {
-        memory_adapter.crateBucket.restore();
+        memory_adapter.createBucket.restore();
         bucket.clear(done);
     });
 

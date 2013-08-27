@@ -1,10 +1,10 @@
 var kvs = require('kvs');
 
 var redisStore = kvs.store('redis', { db: 1 });
-var redisBucket = redisStore.crateBucket({ ttl: 100/*seconds*/ });
+var redisBucket = redisStore.createBucket({ ttl: 100/*seconds*/ });
 
 var memoryStore = kvs.store('memory');
-var memoryBucket = memoryStore.crateBucket({ max: 100, ttl: 10/*seconds*/ });
+var memoryBucket = memoryStore.createBucket({ max: 100, ttl: 10/*seconds*/ });
 
 
 redisBucket.set('foo', 'bar', function(err) {
@@ -28,7 +28,7 @@ var user_id = 123;
 var key = '#' + user_id; // for test if key is not the parameter (user_id) to load.
 
 // Using namespace "user"
-var redisLoadBucket = redisStore.crateBucket('user', {
+var redisLoadBucket = redisStore.createBucket('user', {
     ttl: 100, /*seconds*/
 
     // method to load a thing if it's not in the bucket.

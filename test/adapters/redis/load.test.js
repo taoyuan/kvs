@@ -26,7 +26,7 @@ describe("Redis adapter get with load", function () {
     });
 
     beforeEach(function () {
-        bucket = getStore().crateBucket({
+        bucket = getStore().createBucket({
             load: function (name , cb) {
                 methods.getWidget(name, cb);
             }
@@ -108,7 +108,7 @@ describe("Redis adapter get with load", function () {
     context("when using ttl", function () {
         beforeEach(function () {
             ttl = 50;
-            bucket = getStore().crateBucket({
+            bucket = getStore().createBucket({
                 ttl: ttl,
                 load: function (name , cb) {
                     methods.getWidget(name, cb);
