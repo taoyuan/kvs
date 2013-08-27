@@ -15,9 +15,7 @@ Simple key-value store facade for node.
     keys(cb)
     clear(cb)
 
-## Usage Examples
-
-### Single Store
+## Examples
 ```js
 var kvs = require('kvs');
 
