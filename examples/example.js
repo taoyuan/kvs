@@ -1,24 +1,3 @@
-kvs
-============
-
-Simple key-value store facade for node.
-
-## Installation
-	npm install kvs
-	
-## Methods
-    set(key, val, cb)
-    get(key, cb)
-    del(key, cb)
-    getset(key, value, cb)
-    getdel(key, cb)
-    keys(cb)
-    clear(cb)
-
-## Usage Examples
-
-### Single Cache
-```js
 var kvs = require('kvs');
 
 var redisStore = kvs.store('redis', { db: 1 });
@@ -74,12 +53,3 @@ redisLoadBucket.get(key, user_id, function (err, user) {
 // Returning user from slow database.
 // { id: 123, name: 'Bob' }
 // { id: 123, name: 'Bob' }
-```
-
-
-## Tests
-	npm test
-
-## License
-
-`kvs` is licensed under the MIT license.
