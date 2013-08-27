@@ -44,7 +44,7 @@ function getUser(id, cb) {
 }
 
 var user_id = 123;
-var key = '#' + user_id; // for test if key is not the data (user_id) to load.
+var key = '#' + user_id; // for test if key is not the parameter (user_id) to load.
 
 // Using namespace "user"
 var redisLoadBucket = redisStore.crateBucket('user', {
@@ -53,12 +53,13 @@ var redisLoadBucket = redisStore.crateBucket('user', {
     // method to load a thing if it's not in the bucket.
     load: function (user_id, cb) {
         // this method will only be called if it's not already in bucket, and will
-        // bucket the result in the bucket store.
+        // store the result in the bucket store.
         getUser(user_id, cb);
     }
 });
 
-// `user_id` is used to load, or use `key` without `user_id` parameter.
+// `user_id` is the parameter used to load.
+// if no parameter is specified for loading, the `key` will be used.
 redisLoadBucket.get(key, user_id, function (err, user) {
     console.log(user);
 
