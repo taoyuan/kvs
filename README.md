@@ -75,7 +75,6 @@ redisLoadBucket.get(key, user_id, function (err, user) {
 // { id: 123, name: 'Bob' }
 ```
 
-
 ## Tests
 	npm test
 
