@@ -1,6 +1,6 @@
 {
   "name": "kvs",
-  "version": "0.0.1-4",
+  "version": "0.0.2",
   "description": "Simple key-value store facade for node.",
   "main": "index.js",
   "scripts": {
