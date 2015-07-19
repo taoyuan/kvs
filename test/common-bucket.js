@@ -1,7 +1,7 @@
 "use strict";
 
 var chai = require('chai');
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 var assert = chai.assert;
 var support = require('./support');
 var async = require('async');
@@ -24,10 +24,10 @@ module.exports = function (getStore) {
     };
 
     _.forOwn(types, function (type, name) {
-        testKvs(name, type.genValue, type.options);
+        testKVS(name, type.genValue, type.options);
     });
 
-    function testKvs(name, genValue, options) {
+    function testKVS(name, genValue, options) {
 
         context('bucket ' + name, function () {
             var store;
