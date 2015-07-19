@@ -1,6 +1,10 @@
 kvs
 ============
 
+[![NPM Version](https://img.shields.io/npm/v/kvs.svg?style=flat)](https://www.npmjs.org/package/kvs)
+[![Build Status](http://img.shields.io/travis/taoyuan/kvs.js.svg?style=flat)](https://travis-ci.org/taoyuan/kvs.js)
+[![Dependencies](https://img.shields.io/david/taoyuan/kvs.js.svg?style=flat)](https://david-dm.org/taoyuan/kvs.js)
+
 Simple key-value store facade for node.
 
 ## Installation
