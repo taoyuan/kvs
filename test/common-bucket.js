@@ -35,11 +35,14 @@ module.exports = function (getStore) {
             var key;
             var value;
 
-            beforeEach(function () {
-                store = getStore();
-                bucket = store.createBucket(support.random.string(), options);
-                key = support.random.string(20);
-                value = genValue();
+            beforeEach(function (done) {
+                getStore(function (s) {
+                    store = s;
+                    bucket = store.createBucket(support.random.string(), options);
+                    key = support.random.string(20);
+                    value = genValue();
+                    done();
+                });
             });
 
             afterEach(function (done) {
