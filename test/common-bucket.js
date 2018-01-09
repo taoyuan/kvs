@@ -4,7 +4,6 @@ var chai = require('chai');
 chai.config.includeStack = true;
 var assert = chai.assert;
 var support = require('./support');
-var async = require('async');
 var _ = require('lodash');
 
 module.exports = function (getStore) {
@@ -141,51 +140,34 @@ module.exports = function (getStore) {
         });
       });
 
-      it('keys()', function (done) {
-        var _keys = [];
-        for (var i = 0; i < 10; i++) {
-          _keys.push(support.random.string());
+      it('keys()', async function () {
+        let _keys = [];
+        for (let i = 0; i < 10; i++) {
+          const k = support.random.string();
+          const result = await bucket.set(k, genValue());
+          _keys.push(k);
         }
-        async.eachSeries(_keys, function (key, callback) {
-          bucket.set(key, genValue(), callback);
-        }, function () {
-          bucket.keys(function (err, keys) {
-            assert.sameMembers(_keys, keys);
-            done();
-          });
-        });
+
+        const keys = await bucket.keys();
+        assert.sameMembers(_keys, keys);
       });
 
-      it('clear()', function (done) {
-        async.series([
-          bucket.set.bind(bucket, 'key1', value),
-          bucket.set.bind(bucket, 'key2', value),
-          function (callback) {
-            bucket.get('key1', function (err, val) {
-              assert.ok(val);
-              callback();
-            });
-          },
-          function (callback) {
-            bucket.get('key2', function (err, val) {
-              assert.ok(val);
-              callback();
-            });
-          },
-          bucket.clear.bind(bucket),
-          function (callback) {
-            bucket.get('key1', function (err, val) {
-              assert.notOk(val);
-              callback();
-            });
-          },
-          function (callback) {
-            bucket.get('key2', function (err, val) {
-              assert.notOk(val);
-              callback();
-            });
-          }
-        ], done);
+      it('clear()', async function () {
+        await bucket.set('key1', value);
+        await  bucket.set('key2', value);
+
+        let val1 = await bucket.get('key1');
+        let val2 = await bucket.get('key2');
+        assert.ok(val1);
+        assert.ok(val2);
+
+        await bucket.clear();
+
+        val1 = await bucket.get('key1');
+        val2 = await bucket.get('key2');
+
+        assert.notOk(val1);
+        assert.notOk(val2);
       });
     });
   }
