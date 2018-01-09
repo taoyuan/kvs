@@ -1,9 +1,11 @@
 "use strict";
 
+const {Store} = require('../../..');
+
 describe('Memory adapter common features', function () {
 
   function getStore(cb) {
-    var store = require('../../../').Store('memory');
+    const store = new Store('memory');
     store.ready(function () {
       cb(store);
     });

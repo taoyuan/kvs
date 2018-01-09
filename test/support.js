@@ -32,7 +32,7 @@ var support = {
 
   store: function (adapter) {
     return function () {
-      return Store(adapter);
+      return new Store(adapter);
     }
   }
 };

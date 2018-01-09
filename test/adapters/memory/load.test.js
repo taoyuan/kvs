@@ -69,7 +69,7 @@ describe("Memory adapter get with load", function () {
           assert.notOk(err);
           assert.deepEqual(widget, {name: name});
           assert.ok(memory_stub.get.calledWith(bucket.getKey(key)));
-          assert.ok(!methods.getWidget.called);
+          assert.notOk(methods.getWidget.called);
           memory_stub.get.restore();
           methods.getWidget.restore();
           done();
@@ -111,7 +111,7 @@ describe("Memory adapter get with load", function () {
       });
 
       bucket.get(key, name, function (err) {
-        assert.equal(err, fake_error);
+        assert.equal(err.cause || err, fake_error);
         memory_stub.get.restore();
         done();
       });
@@ -127,7 +127,7 @@ describe("Memory adapter get with load", function () {
       });
 
       bucket.get(key, name, function (err) {
-        assert.equal(err, fake_error);
+        assert.equal(err.cause || err, fake_error);
         memory_stub.set.restore();
         done();
       });

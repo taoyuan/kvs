@@ -46,7 +46,7 @@ describe("Redis adapter get with load", function () {
   it("should calls back with the result of load", function (done) {
     bucket.get(key, name, function (err, widget) {
       assert.notOk(err);
-      assert.deepEqual(widget, {name: name});
+      assert.deepEqual(widget, {name});
       done();
     });
   });
@@ -74,7 +74,7 @@ describe("Redis adapter get with load", function () {
 
       bucket.get(key, name, function (err, widget) {
         methods.getWidget.restore();
-        assert.equal(err, fake_error);
+        assert.equal(err.cause || err, fake_error);
         assert.ok(!widget);
 
         redis_client.get(bucket.getKey(key), function (err, result) {
