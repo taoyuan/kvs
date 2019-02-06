@@ -1,59 +1,48 @@
-var kvs = require('kvs');
+const PromiseA = require('bluebird');
+const kvs = require('..');
 
-var redisStore = kvs.store('redis', {db: 1});
-var redisBucket = redisStore.createBucket({ttl: 100/*seconds*/});
+const TTL = 2;
+const redisStore = kvs.store('redis', {db: 1});
 
-var memoryStore = kvs.store('memory');
-var memoryBucket = memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
+(async () => {
+  const redisBucket = await redisStore.createBucket({ttl: TTL/*seconds*/});
+  // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
+  await redisBucket.set('foo', 'bar');
+  let result = await redisBucket.get('foo');
+  console.log(result);
+  await redisBucket.del('foo');
 
-redisBucket.set('foo', 'bar', function (err) {
-  if (err) {
-    throw err;
-  }
+  const userId = 123;
+  const key = '#' + userId; // for test if key is not the parameter (user_id) to load.
 
-  redisBucket.get('foo', function (err, result) {
-    console.log(result);
-    // >> 'bar'
-    redisBucket.del('foo', function (err) {
-    });
+  // Using namespace "user"
+  const redisLoadBucket = await redisStore.createBucket('user', {
+    ttl: TTL, /*seconds*/
+
+    // method to load a thing if it's not in the bucket.
+    load: loadUser
   });
-});
 
-function getUser(id, cb) {
-  setTimeout(function () {
-    console.log("Returning user from slow database.");
-    cb(null, {id: id, name: 'Bob'});
-  }, 100);
-}
-
-var user_id = 123;
-var key = '#' + user_id; // for test if key is not the parameter (user_id) to load.
-
-// Using namespace "user"
-var redisLoadBucket = redisStore.createBucket('user', {
-  ttl: 100, /*seconds*/
-
-  // method to load a thing if it's not in the bucket.
-  load: function (user_id, cb) {
-    // this method will only be called if it's not already in bucket, and will
-    // store the result in the bucket store.
-    getUser(user_id, cb);
-  }
-});
-
-// `user_id` is the parameter used to load.
-// if no parameter is specified for loading, the `key` will be used.
-redisLoadBucket.get(key, user_id, function (err, user) {
+  // `user_id` is the parameter used to load.
+  // if no parameter is specified for loading, the `key` will be used.
+  let user = await redisLoadBucket.get(key, userId);
   console.log(user);
 
   // Second time fetches user from redisLoadBucket
-  redisLoadBucket.get(key, user_id, function (err, user) {
-    console.log(user);
-  });
-});
+  user = await redisLoadBucket.get(key, userId);
+  console.log(user);
 
-// Outputs:
-// Returning user from slow database.
-// { id: 123, name: 'Bob' }
-// { id: 123, name: 'Bob' }
+  // Outputs:
+  // Returning user from slow database.
+  // { id: 123, name: 'Bob' }
+  // { id: 123, name: 'Bob' }
+
+  await redisStore.close();
+})();
+
+async function loadUser(id) {
+  await PromiseA.fromCallback(cb => setTimeout(cb, 100));
+  console.log("Returning user from slow database.");
+  return {id: id, name: 'Bob'};
+}

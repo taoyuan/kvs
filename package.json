@@ -1,10 +1,16 @@
 {
   "name": "kvs",
-  "version": "0.3.3",
+  "version": "1.0.0",
   "description": "Simple key-value store facade for node.",
-  "main": "index.js",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
   "scripts": {
-    "test": "mocha test/**/*.test.js"
+    "clean": "rimraf lib",
+    "format": "prettier --write \"{src,test}/**/*.ts\" --single-quote --trailing-comma es5",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean && echo Using TypeScript && tsc --version",
+    "build": "tsc --pretty",
+    "test": "npm run build && nyc mocha --require ts-node/register --recursive \"test/**/*.test.ts\""
   },
   "repository": {
     "type": "git",
@@ -26,17 +32,31 @@
     "url": "https://github.com/taoyuan/kvs/issues"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "lodash": "~4.17.4",
-    "lru-cache": "~4.1.1",
+    "bluebird": "^3.5.3",
+    "lodash": "~4.17.11",
+    "lru-cache": "~5.1.1",
+    "minimatch": "^3.0.4",
     "redis": "~2.8.0"
   },
   "devDependencies": {
-    "@types/async": "^2.0.46",
-    "@types/chai": "^4.1.0",
-    "@types/mocha": "^2.2.46",
-    "chai": "~4.1.2",
-    "mocha": "~4.1.0",
-    "sinon": "~4.1.4"
+    "@types/async": "^2.4.0",
+    "@types/bluebird": "^3.5.25",
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/lru-cache": "^4.1.1",
+    "@types/minimatch": "^3.0.3",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.21",
+    "@types/redis": "^2.8.10",
+    "@types/sinon": "^7.0.5",
+    "chai": "~4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "~5.2.0",
+    "nyc": "^13.1.0",
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3",
+    "sinon": "~7.2.3",
+    "ts-node": "latest",
+    "typescript": "latest"
   }
 }
