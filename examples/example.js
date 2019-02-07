@@ -1,4 +1,3 @@
-const PromiseA = require('bluebird');
 const kvs = require('..');
 
 const TTL = 100;
@@ -42,7 +41,7 @@ const store = kvs.store('memory');
 })();
 
 async function loadUser(id) {
-  await PromiseA.fromCallback(cb => setTimeout(cb, 100));
+  await new Promise(resolve => setTimeout(resolve, 100));
   console.log("Returning user from slow database.");
   return {id: id, name: 'Bob'};
 }
