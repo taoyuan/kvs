@@ -5,7 +5,7 @@ import _ = require("lodash");
 import { random, StoreProvider } from "./support";
 import { Bucket } from "../src";
 
-module.exports = function(getStore: StoreProvider) {
+export function test(getStore: StoreProvider) {
   const types = {
     string: {
       genValue: function() {
@@ -122,4 +122,4 @@ module.exports = function(getStore: StoreProvider) {
     });
   }
 
-};
+}

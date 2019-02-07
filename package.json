@@ -23,7 +23,6 @@
     "value",
     "key-value",
     "cache",
-    "redis",
     "memory"
   ],
   "author": "Tao Yuan",
@@ -35,8 +34,7 @@
     "bluebird": "^3.5.3",
     "lodash": "~4.17.11",
     "lru-cache": "~5.1.1",
-    "minimatch": "^3.0.4",
-    "redis": "~2.8.0"
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
     "@types/async": "^2.4.0",
@@ -47,7 +45,6 @@
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.21",
-    "@types/redis": "^2.8.10",
     "@types/sinon": "^7.0.5",
     "chai": "~4.2.0",
     "chai-as-promised": "^7.1.1",
