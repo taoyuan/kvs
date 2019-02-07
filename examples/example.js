@@ -1,11 +1,11 @@
 const PromiseA = require('bluebird');
 const kvs = require('..');
 
-const TTL = 2;
-const redisStore = kvs.store('redis', {db: 1});
+const TTL = 100;
+const store = kvs.store('memory');
 
 (async () => {
-  const redisBucket = await redisStore.createBucket({ttl: TTL/*seconds*/});
+  const redisBucket = await store.createBucket({ttl: TTL/*seconds*/});
   // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
   await redisBucket.set('foo', 'bar');
@@ -17,7 +17,7 @@ const redisStore = kvs.store('redis', {db: 1});
   const key = '#' + userId; // for test if key is not the parameter (user_id) to load.
 
   // Using namespace "user"
-  const redisLoadBucket = await redisStore.createBucket('user', {
+  const redisLoadBucket = await store.createBucket('user', {
     ttl: TTL, /*seconds*/
 
     // method to load a thing if it's not in the bucket.
@@ -38,7 +38,7 @@ const redisStore = kvs.store('redis', {db: 1});
   // { id: 123, name: 'Bob' }
   // { id: 123, name: 'Bob' }
 
-  await redisStore.close();
+  await store.close();
 })();
 
 async function loadUser(id) {
