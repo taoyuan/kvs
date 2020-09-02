@@ -4,7 +4,7 @@ const TTL = 100;
 const store = kvs.store('memory');
 
 (async () => {
-  const redisBucket = await store.createBucket({ttl: TTL/*seconds*/});
+  const redisBucket = await store.createBucket({ttl: TTL /*seconds*/});
   // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
   await redisBucket.set('foo', 'bar');
@@ -17,10 +17,10 @@ const store = kvs.store('memory');
 
   // Using namespace "user"
   const redisLoadBucket = await store.createBucket('user', {
-    ttl: TTL, /*seconds*/
+    ttl: TTL /*seconds*/,
 
     // method to load a thing if it's not in the bucket.
-    load: loadUser
+    load: loadUser,
   });
 
   // `user_id` is the parameter used to load.
@@ -42,6 +42,6 @@ const store = kvs.store('memory');
 
 async function loadUser(id) {
   await new Promise(resolve => setTimeout(resolve, 100));
-  console.log("Returning user from slow database.");
+  console.log('Returning user from slow database.');
   return {id: id, name: 'Bob'};
 }

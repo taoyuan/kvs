@@ -1,116 +1,68 @@
-import { existsSync } from "fs";
-import { EventEmitter } from "events";
-import PromiseA = require("bluebird");
-import { Bucket, BucketOptions } from "./bucket";
+import {EventEmitter} from 'events';
+import {AdapterOptions} from './options';
+import {Adapter, AdapterCtor, isAdapterCtor} from './types';
+import {Bucket, BucketOptions} from './bucket';
+import {createAdapter} from './adapters';
 
-import { AdapterFactory, AdapterInitializer } from "./adapter";
-
-export interface StoreOptions {
-  [name: string]: any;
+export interface StoreOptions extends AdapterOptions {
+  buckets?: Record<string, BucketOptions>;
 }
 
 export class Store extends EventEmitter {
   name: string;
-  settings;
-  defaultBucketOptions;
-  defaultNamespace: string = "bucket";
-  buckets;
-  factory: AdapterFactory<any>;
-  initialized;
+  adapter: Adapter;
+  protected options: StoreOptions;
+  protected defaultNamespace = 'bucket';
+  protected defaultBucketOptions: BucketOptions = {ttl: 0};
+  protected buckets: Record<string, Bucket> = {};
 
-
-  static create(name: string, settings?: StoreOptions): Store;
-  static create(settings: StoreOptions): Store;
-  static create(initializer: AdapterInitializer): Store;
-  static create(name: string | StoreOptions | AdapterInitializer, settings?: StoreOptions): Store {
-    return new Store(name, settings);
+  static create(
+    nameOrAdapter: string | Adapter | AdapterCtor,
+    options?: StoreOptions,
+  ): Store {
+    return new Store(nameOrAdapter, options);
   }
 
-  static async createAndWait(name: string, settings?: StoreOptions): Promise<Store>;
-  static async createAndWait(settings: StoreOptions): Promise<Store>;
-  static async createAndWait(initializer: AdapterInitializer): Promise<Store>;
-  static async createAndWait(name: string | StoreOptions | AdapterInitializer, settings?: StoreOptions): Promise<Store> {
-    const store = new Store(name, settings);
-    await store.ready();
-    return store;
-  }
-
-  constructor(name: string | StoreOptions | AdapterInitializer, settings?: StoreOptions) {
+  constructor(
+    nameOrAdapter: string | Adapter | AdapterCtor,
+    options: StoreOptions = {},
+  ) {
     super();
 
-    if (typeof name !== "string") {
-      settings = name;
-      name = "";
-    }
-
-    this.name = name;
-    this.settings = settings;
-
-    this.defaultBucketOptions = {
-      ttl: 0
-    };
-    this.buckets = {};
-
-    // and initialize store using adapter
-    // this is only one initialization entry point of adapter
-    // this module should define `adapter` member of `this` (store)
-    let initializer: AdapterInitializer;
-    if (settings && typeof settings.initialize === "function") {
-      initializer = <AdapterInitializer>settings;
-    } else if (name.match(/^\//)) {
-      // try absolute path
-      initializer = require(name);
-    } else if (hasScript(__dirname + "/adapters/" + name)) {
-      // try built-in adapter
-      initializer = require("./adapters/" + name);
+    if (typeof nameOrAdapter === 'string') {
+      this.adapter = createAdapter(nameOrAdapter, options);
+    } else if (isAdapterCtor(nameOrAdapter)) {
+      this.adapter = nameOrAdapter.create(options);
     } else {
-      // try foreign adapter
-      try {
-        initializer = require("kvs-" + name);
-      } catch (e) {
-        console.log("\nWARNING: KVS adapter \"" + name + "\" is not installed,\nso your models would not work, to fix run:\n\n    npm install kvs-" + name, "\n");
-        process.exit(1);
-        return;
-      }
+      this.adapter = nameOrAdapter;
     }
 
-    initializer.initialize(settings).then(factory => {
-      this.factory = factory;
-      this.name = factory.name;
-
-      this.initialized = true;
-      this.emit("ready");
-    });
-  }
-
-  async ready() {
-    if (!this.initialized) {
-      return PromiseA.fromCallback(cb => this.once("ready", cb));
-    }
+    this.name = this.adapter.name;
+    this.options = options;
   }
 
   bucketOptions(namespace: string) {
-    let bucketOptions = {};
-    if (this.settings && this.settings.buckets) {
-      bucketOptions = this.settings.buckets[namespace] || {};
-    }
-    return Object.assign({}, this.defaultBucketOptions, bucketOptions);
-  };
+    return {...this.defaultBucketOptions, ...(this.options.buckets ?? {})};
+  }
 
   async createBucket(options: BucketOptions): Promise<Bucket>;
-  async createBucket(namespace: string, options?: BucketOptions): Promise<Bucket>;
-  async createBucket(namespace: string | BucketOptions, options?: BucketOptions): Promise<Bucket> {
-    await this.ready();
-
-    if (typeof namespace !== "string") {
+  async createBucket(
+    namespace: string,
+    options?: BucketOptions,
+  ): Promise<Bucket>;
+  async createBucket(
+    namespace: string | BucketOptions,
+    options?: BucketOptions,
+  ): Promise<Bucket> {
+    if (typeof namespace !== 'string') {
       options = namespace;
-      namespace = "";
+      namespace = '';
     }
     namespace = namespace || this.defaultNamespace;
     options = options || this.bucketOptions(namespace);
 
-    return new Bucket(namespace, this.factory.create(options), options);
-  };
+    return new Bucket(namespace, this.adapter, options);
+  }
 
   async bucket(namespace?: string): Promise<Bucket> {
     namespace = namespace || this.defaultNamespace;
@@ -118,17 +70,12 @@ export class Store extends EventEmitter {
       this.buckets[namespace] = await this.createBucket(namespace);
     }
     return this.buckets[namespace];
-  };
+  }
 
   /**
    * Close store connection
    */
   async close() {
-    await this.factory.close();
-  };
-
-}
-
-function hasScript(path: string) {
-  return existsSync(path + ".js") || existsSync(path + ".ts");
+    await this.adapter.close();
+  }
 }
