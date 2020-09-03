@@ -1,7 +1,7 @@
 # kvs
 
 [![NPM Version](https://img.shields.io/npm/v/kvs.svg?style=flat)](https://www.npmjs.org/package/kvs)
-[![Build Status](http://img.shields.io/travis/taoyuan/kvs.js.svg?style=flat)](https://travis-ci.org/taoyuan/kvs.js)
+[![Build Status](https://travis-ci.com/taoyuan/kvs.svg?branch=master)](https://travis-ci.com/github/taoyuan/kvs)
 [![Coverage percentage](https://coveralls.io/repos/taoyuan/kvs/badge.svg)](https://coveralls.io/r/taoyuan/kvs)
 
 Simple key-value store facade for node.
