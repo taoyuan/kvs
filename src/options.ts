@@ -1,4 +1,3 @@
 import {MemoryOptions} from './adapters/memory';
-import {RedisOptions} from './adapters/redis';
 
-export type AdapterOptions = MemoryOptions | RedisOptions;
+export type AdapterOptions = MemoryOptions | Record<string, any>;
