@@ -1,7 +1,7 @@
-const kvs = require('..');
+const {Store} = require('..');
 
 const TTL = 100;
-const store = kvs.store('memory');
+const store = Store.create('memory');
 
 (async () => {
   const redisBucket = await store.createBucket({ttl: TTL /*seconds*/});

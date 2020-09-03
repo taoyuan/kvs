@@ -2,81 +2,81 @@
 
 [![NPM Version](https://img.shields.io/npm/v/kvs.svg?style=flat)](https://www.npmjs.org/package/kvs)
 [![Build Status](http://img.shields.io/travis/taoyuan/kvs.js.svg?style=flat)](https://travis-ci.org/taoyuan/kvs.js)
-[![Dependencies](https://img.shields.io/david/taoyuan/kvs.js.svg?style=flat)](https://david-dm.org/taoyuan/kvs.js)
+[![Coverage percentage](https://coveralls.io/repos/taoyuan/kvs/badge.svg)](https://coveralls.io/r/taoyuan/kvs)
 
 Simple key-value store facade for node.
 
 ## Installation
 
-    npm install kvs
+```sh
+$ npm install kvs
+```
 
 ## Methods
 
-    set(key, val, cb)
-    get(key, cb)
-    del(key, cb)
-    getset(key, value, cb)
-    getdel(key, cb)
-    keys(cb)
-    clear(cb)
+```
+set(key, val)
+get(key)
+del(key)
+getset(key, value)
+getdel(key)
+keys()
+clear()
+```
 
 ## Examples
 
 ```js
-var kvs = require('kvs');
+const {Store} = require('..');
 
-var redisStore = kvs.store('redis', {db: 1});
-var redisBucket = redisStore.createBucket({ttl: 100 /*seconds*/});
+const TTL = 100;
+const store = Store.create('memory');
 
-var memoryStore = kvs.store('memory');
-var memoryBucket = memoryStore.createBucket({max: 100, ttl: 10 /*seconds*/});
+(async () => {
+  const redisBucket = await store.createBucket({ttl: TTL /*seconds*/});
+  // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
-redisBucket.set('foo', 'bar', function (err) {
-  if (err) {
-    throw err;
-  }
+  await redisBucket.set('foo', 'bar');
+  let result = await redisBucket.get('foo');
+  console.log(result);
+  await redisBucket.del('foo');
 
-  redisBucket.get('foo', function (err, result) {
-    console.log(result);
-    // >> 'bar'
-    redisBucket.del('foo', function (err) {});
+  const userId = 123;
+  const key = '#' + userId; // for test if key is not the parameter (user_id) to load.
+
+  // Using namespace "user"
+  const redisLoadBucket = await store.createBucket('user', {
+    ttl: TTL /*seconds*/,
+
+    // method to load a thing if it's not in the bucket.
+    load: loadUser,
   });
-});
 
-function getUser(id, cb) {
-  setTimeout(function () {
-    console.log('Returning user from slow database.');
-    cb(null, {id: id, name: 'Bob'});
-  }, 100);
-}
-
-var user_id = 123;
-var key = '#' + user_id; // for test if key is not the parameter (user_id) to load.
-
-// Using namespace "user"
-var redisLoadBucket = redisStore.createBucket('user', {
-  ttl: 100 /*seconds*/,
-
-  // method to load a thing if it's not in the bucket.
-  load: function (user_id, cb) {
-    // this method will only be called if it's not already in bucket, and will
-    // store the result in the bucket store.
-    getUser(user_id, cb);
-  },
-});
-
-// `user_id` is the parameter used to load.
-// if no parameter is specified for loading, the `key` will be used.
-redisLoadBucket.get(key, user_id, function (err, user) {
+  // `user_id` is the parameter used to load.
+  // if no parameter is specified for loading, the `key` will be used.
+  let user = await redisLoadBucket.get(key, userId);
   console.log(user);
 
   // Second time fetches user from redisLoadBucket
-  redisLoadBucket.get(key, user_id, function (err, user) {
-    console.log(user);
-  });
-});
+  user = await redisLoadBucket.get(key, userId);
+  console.log(user);
+
+  // Outputs:
+  // Returning user from slow database.
+  // { id: 123, name: 'Bob' }
+  // { id: 123, name: 'Bob' }
+
+  await store.close();
+})();
+
+async function loadUser(id) {
+  await new Promise(resolve => setTimeout(resolve, 100));
+  console.log('Returning user from slow database.');
+  return {id: id, name: 'Bob'};
+}
 
 // Outputs:
+// bar
 // Returning user from slow database.
 // { id: 123, name: 'Bob' }
 // { id: 123, name: 'Bob' }
@@ -84,7 +84,9 @@ redisLoadBucket.get(key, user_id, function (err, user) {
 
 ## Tests
 
-    npm test
+```bash
+$ npm test
+```
 
 ## License
 
