@@ -55,6 +55,9 @@
     "minimatch": "^3.0.4",
     "tslib": "^2.0.1"
   },
+  "optionalDependencies": {
+    "redis": "^3.0.2"
+  },
   "devDependencies": {
     "@tib/build": "^6.3.4",
     "@tib/eslint-config": "^8.2.4",
@@ -62,6 +65,8 @@
     "@types/lru-cache": "^5.1.0",
     "@types/minimatch": "^3.0.3",
     "@types/node": "^14.6.2",
+    "@types/redis": "^2.8.27",
+    "@types/redis-mock": "^0.17.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
@@ -70,6 +75,7 @@
     "np": "^6.5.0",
     "nyc": "^15.1.0",
     "prettier": "^2.1.1",
+    "redis-mock": "^0.51.0",
     "rimraf": "^3.0.2",
     "sinon": "^9.0.3",
     "ts-node": "^9.0.0",

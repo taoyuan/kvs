@@ -4,9 +4,9 @@ import {Adapter, AdapterCtor, isAdapterCtor} from './types';
 import {Bucket, BucketOptions} from './bucket';
 import {createAdapter} from './adapters';
 
-export interface StoreOptions extends AdapterOptions {
+export type StoreOptions = AdapterOptions & {
   buckets?: Record<string, BucketOptions>;
-}
+};
 
 export class Store extends EventEmitter {
   name: string;
@@ -58,14 +58,14 @@ export class Store extends EventEmitter {
       options = namespace;
       namespace = '';
     }
-    namespace = namespace || this.defaultNamespace;
-    options = options || this.bucketOptions(namespace);
+    namespace = namespace ?? this.defaultNamespace;
+    options = options ?? this.bucketOptions(namespace);
 
     return new Bucket(namespace, this.adapter, options);
   }
 
   async bucket(namespace?: string): Promise<Bucket> {
-    namespace = namespace || this.defaultNamespace;
+    namespace = namespace ?? this.defaultNamespace;
     if (!this.buckets[namespace]) {
       this.buckets[namespace] = await this.createBucket(namespace);
     }

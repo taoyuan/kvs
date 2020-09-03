@@ -5,7 +5,7 @@ export type StoreProvider = () => Promise<Store>;
 
 export const random = {
   string(len?: number) {
-    len = len || 8;
+    len = len ?? 8;
     const chars = 'abcdefghiklmnopqrstuvwxyz';
     let str = '';
     for (let i = 0; i < len; i++) {

@@ -34,7 +34,11 @@ export default class Memory implements Adapter {
   }
 
   async set(key: string, value: any, maxAge?: number): Promise<void> {
-    this.cache.set(key, value, maxAge);
+    this.cache.set(
+      key,
+      value,
+      typeof maxAge === 'number' ? maxAge * 1000 : undefined,
+    );
   }
 
   async getset(key: string, value: any): Promise<any> {

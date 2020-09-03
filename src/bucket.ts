@@ -28,7 +28,7 @@ export class Bucket {
     this.ttl = options.ttl ?? 0;
     this.load = options.load;
     this.allowStale = !!options.stale;
-    this.delimiter = options.delimiter || ':';
+    this.delimiter = options.delimiter ?? ':';
   }
 
   fullkey(key: string): string {
@@ -63,12 +63,12 @@ export class Bucket {
       return value;
     }
 
-    await this.adapter.set(fullkey, value);
+    await this.adapter.set(fullkey, value, this.ttl);
     return value;
   }
 
-  async set(key: string, value: any, maxAge?: number): Promise<void> {
-    return this.adapter.set(this.fullkey(key), value, maxAge ?? this.ttl);
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    return this.adapter.set(this.fullkey(key), value, ttl ?? this.ttl);
   }
 
   async getset(key: string, value: any): Promise<any> {
@@ -84,7 +84,7 @@ export class Bucket {
   }
 
   async keys(pattern?: string): Promise<string[]> {
-    const patternToUse = pattern || '*';
+    const patternToUse = pattern ?? '*';
     const len = this.namespace.length + 1;
     const keys = await this.adapter.keys(this.namespace + ':' + patternToUse);
     if (!keys) {
@@ -97,7 +97,7 @@ export class Bucket {
   }
 
   async clear(pattern?: string): Promise<number> {
-    const patternToUse = pattern || '*';
+    const patternToUse = pattern ?? '*';
     return this.adapter.clear(this.namespace + ':' + patternToUse);
   }
 }
