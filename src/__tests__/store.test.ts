@@ -27,6 +27,14 @@ describe('Store', function () {
       expect(result).equal(value);
       await bucket.clear();
     });
+
+    it('should initiate with options.name', async function () {
+      bucket = await Store.create({name: 'memory'}).bucket();
+      await bucket.set(key, value);
+      const result = await bucket.get(key);
+      expect(result).equal(value);
+      await bucket.clear();
+    });
   });
 
   describe('instantiating with adapter constructor', function () {

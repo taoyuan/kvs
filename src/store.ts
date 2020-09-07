@@ -44,6 +44,7 @@ export class Store extends EventEmitter {
 
     adapter = adapter ?? options?.adapter;
     options = options ?? {};
+    name = name ?? options.name;
 
     if (isAdapter(adapter)) {
       this.adapter = adapter;
