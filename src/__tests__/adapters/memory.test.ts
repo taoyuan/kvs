@@ -4,8 +4,9 @@ import {Adapter} from '../../types';
 import {Store} from '../../store';
 import {Bucket} from '../../bucket';
 import {random} from '../support';
+import Memory from '../../adapters/memory';
 
-const getStore = () => Store.create('memory');
+const createStore = () => Store.create('memory');
 
 const methods = {
   async getWidget(name: string) {
@@ -14,7 +15,7 @@ const methods = {
 };
 
 describe('Memory', function () {
-  describe('Memory adapter get with load', function () {
+  describe('get with load', function () {
     let store: Store;
     let bucket: Bucket;
     let key: string;
@@ -23,7 +24,7 @@ describe('Memory', function () {
     let adapter: Adapter;
 
     beforeEach(async () => {
-      store = getStore();
+      store = createStore();
       ttl = 0.1;
       adapter = store.adapter;
 
@@ -102,6 +103,20 @@ describe('Memory', function () {
         await expect(bucket.get(key, name)).rejectedWith(fakeError.message);
         spyGet.restore();
       });
+    });
+  });
+
+  describe('dump and load', function () {
+    const key = random.string(10);
+    const value = random.string(10);
+
+    it('should dump and load data', async function () {
+      let store = Store.create(Memory);
+      const bucket = await store.bucket('test');
+      await bucket.set(key, value);
+      const data = (store.adapter as Memory).dump();
+      store = Store.create(Memory, {data});
+      expect(data).deepEqual((store.adapter as Memory).dump());
     });
   });
 });

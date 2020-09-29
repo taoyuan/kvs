@@ -1,6 +1,6 @@
+import {expect} from '@tib/testlab';
 import {Bucket, Store} from '..';
 import {random} from './support';
-import {expect} from '@tib/testlab';
 
 describe('Store', function () {
   let bucket: Bucket;
