@@ -6,6 +6,7 @@ import {Adapter} from '../types';
 export interface MemoryOptions {
   max?: number;
   ttl?: number;
+  data?: LRUCache.Entry<any, any>[];
 }
 
 export default class Memory implements Adapter {
@@ -23,6 +24,13 @@ export default class Memory implements Adapter {
       max: options.max ?? 500,
       maxAge: options.ttl ? options.ttl * 1000 : undefined,
     });
+    if (options.data) {
+      this.cache.load(options.data);
+    }
+  }
+
+  dump() {
+    return this.cache.dump();
   }
 
   async has(key: string): Promise<number> {
