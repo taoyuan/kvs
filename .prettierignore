@@ -1,7 +1,7 @@
 .github/
 /coverage
-**/.sandbox
-dist
+packages/*/dist
+examples/*/dist
 *.json
 CHANGELOG.md
 *.yml

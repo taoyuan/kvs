@@ -1,12 +1,15 @@
 {
-  "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "@tib/build/config/tsconfig.common.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
     "composite": true
   },
-  "include": [
-    "src"
-  ]
+  "references": [
+    {
+      "path": "packages/kvs-testlab/tsconfig.json"
+    },
+    {
+      "path": "packages/kvs/tsconfig.json"
+    }
+  ],
+  "files": []
 }

@@ -78,14 +78,14 @@ export default class Memory implements Adapter {
   }
 
   async clear(pattern?: string): Promise<number> {
-    const patternToUse = pattern ?? '*';
-    if (patternToUse === '*') {
+    pattern = pattern ?? '*';
+    if (pattern === '*') {
       const count = this.cache.itemCount;
       this.cache.reset();
       return count;
     }
 
-    const keys = await this.keys();
+    const keys = await this.keys(pattern);
     if (isEmpty(keys)) {
       return 0;
     }

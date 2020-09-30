@@ -3,12 +3,13 @@ const {Store} = require('..');
 const TTL = 100;
 const store = Store.create('memory');
 
-(async () => {
+// eslint-disable-next-line no-void
+void (async () => {
   const redisBucket = await store.createBucket({ttl: TTL /*seconds*/});
   // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
   await redisBucket.set('foo', 'bar');
-  let result = await redisBucket.get('foo');
+  const result = await redisBucket.get('foo');
   console.log(result);
   await redisBucket.del('foo');
 
