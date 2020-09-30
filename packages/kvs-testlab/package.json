@@ -1,7 +1,7 @@
 {
   "name": "kvs-testlab",
   "description": "A common test suite for KVS APIs",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "keywords": [],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
