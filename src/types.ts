@@ -23,7 +23,7 @@ export interface Adapter {
 export interface AdapterCtor<
   T extends Record<string, any> = Record<string, any>
 > {
-  create(options: T): Adapter;
+  new (options: T): Adapter;
 }
 
 export function isAdapter(x: any): x is Adapter {
@@ -35,6 +35,6 @@ export function isAdapter(x: any): x is Adapter {
   );
 }
 
-export function isAdapterCtor(x: any): x is AdapterCtor {
-  return typeof x === 'function' && typeof x.create === 'function';
+export function isConstructor(x: any): x is AdapterCtor {
+  return typeof x === 'function';
 }

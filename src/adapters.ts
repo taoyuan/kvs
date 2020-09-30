@@ -1,4 +1,4 @@
-import {Adapter, AdapterCtor, isAdapterCtor} from './types';
+import {Adapter, AdapterCtor, isConstructor} from './types';
 import {format} from './utils';
 
 const debug = require('debug')('kvs:adapters');
@@ -6,7 +6,8 @@ const debug = require('debug')('kvs:adapters');
 export type ModuleLoader<T> = (name: string) => T | undefined;
 
 export function createAdapter(name: string, options?: any): Adapter {
-  return getAdapter(name).create(options);
+  const cls = getAdapter(name);
+  return new cls(options);
 }
 
 // List possible adapter module names
@@ -79,7 +80,7 @@ export function getAdapter(
   loader?: ModuleLoader<AdapterCtor>,
 ): AdapterCtor {
   const answer = resolveAdapter(name, loader);
-  if (isAdapterCtor(answer)) {
+  if (isConstructor(answer)) {
     return answer;
   }
   throw answer;

@@ -1,6 +1,6 @@
 import {EventEmitter} from 'events';
 import {AdapterOptions} from './options';
-import {Adapter, AdapterCtor, isAdapter, isAdapterCtor} from './types';
+import {Adapter, AdapterCtor, isAdapter, isConstructor} from './types';
 import {Bucket, BucketOptions} from './bucket';
 import {createAdapter} from './adapters';
 
@@ -36,7 +36,7 @@ export class Store extends EventEmitter {
 
     if (typeof nameOrOptions === 'string') {
       name = nameOrOptions;
-    } else if (isAdapter(nameOrOptions) || isAdapterCtor(nameOrOptions)) {
+    } else if (isAdapter(nameOrOptions) || isConstructor(nameOrOptions)) {
       adapter = nameOrOptions;
     } else if (typeof nameOrOptions === 'object' && options === undefined) {
       options = nameOrOptions;
@@ -48,8 +48,8 @@ export class Store extends EventEmitter {
 
     if (isAdapter(adapter)) {
       this.adapter = adapter;
-    } else if (isAdapterCtor(adapter)) {
-      this.adapter = adapter.create(options);
+    } else if (isConstructor(adapter)) {
+      this.adapter = new adapter(options);
     } else if (typeof name === 'string') {
       this.adapter = createAdapter(name, options);
     } else {

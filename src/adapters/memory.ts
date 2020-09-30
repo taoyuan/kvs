@@ -14,10 +14,6 @@ export default class Memory implements Adapter {
 
   protected cache: LRUCache<string, any>;
 
-  static create(options: MemoryOptions = {}) {
-    return new Memory(options);
-  }
-
   constructor(options: MemoryOptions = {}) {
     options = options ?? {};
     this.cache = new LRUCache({
