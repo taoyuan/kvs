@@ -1,6 +1,6 @@
-import LRUCache from 'lru-cache';
-import minimatch from 'minimatch';
 import isEmpty from '@tib/utils/is/empty';
+import LRUCache from 'lru-cache';
+import micromatch from 'micromatch';
 import {Adapter} from '../types';
 
 export interface MemoryOptions {
@@ -74,7 +74,7 @@ export default class Memory implements Adapter {
     }
     const answer: string[] = [];
     for (const key of keys) {
-      if (minimatch(key, patternToUse)) {
+      if (micromatch.isMatch(key, patternToUse)) {
         answer.push(key);
       }
     }

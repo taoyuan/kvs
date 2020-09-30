@@ -54,7 +54,7 @@
     "@tib/utils": "^2.4.4",
     "debug": "^4.2.0",
     "lru-cache": "^6.0.0",
-    "minimatch": "^3.0.4",
+    "micromatch": "^4.0.2",
     "tslib": "^2.0.1"
   },
   "devDependencies": {
@@ -62,6 +62,7 @@
     "@tib/eslint-config": "^8.2.4",
     "@tib/testlab": "^3.4.4",
     "@types/lru-cache": "^5.1.0",
+    "@types/micromatch": "^4.0.1",
     "@types/minimatch": "^3.0.3",
     "@types/node": "^14.11.2",
     "chai": "^4.2.0",
