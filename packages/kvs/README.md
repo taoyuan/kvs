@@ -35,19 +35,19 @@ const TTL = 100;
 const store = Store.create('memory');
 
 (async () => {
-  const  bucket1 = await store.bucket({ttl: TTL /*seconds*/});
+  const bucket1 = await store.bucket({ttl: TTL /*seconds*/});
   // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
-  await  bucket1.set('foo', 'bar');
-  let result = await  bucket1.get('foo');
+  await bucket1.set('foo', 'bar');
+  let result = await bucket1.get('foo');
   console.log(result);
-  await  bucket1.del('foo');
+  await bucket1.del('foo');
 
   const userId = 123;
   const key = '#' + userId; // for test if key is not the parameter (user_id) to load.
 
   // Using namespace "user"
-  const  bucket2 = await store.bucket('user', {
+  const bucket2 = await store.bucket('user', {
     ttl: TTL /*seconds*/,
 
     // method to load a thing if it's not in the bucket.
@@ -56,11 +56,11 @@ const store = Store.create('memory');
 
   // `user_id` is the parameter used to load.
   // if no parameter is specified for loading, the `key` will be used.
-  let user = await  bucket2.get(key, userId);
+  let user = await bucket2.get(key, userId);
   console.log(user);
 
   // Second time fetches user from  bucket2
-  user = await  bucket2.get(key, userId);
+  user = await bucket2.get(key, userId);
   console.log(user);
 
   // Outputs:
@@ -94,18 +94,17 @@ interface Settings {
   ttl: number;
 }
 
-(async () => {
+async () => {
   const store = new Store('memory');
   const bucket = await store.bucket<Settings>('settings');
   await bucket.set('name', 'foo');
   await bucket.set('ttl', '3600');
-  
+
   console.log(await bucket.get('name'));
   // => foo
   console.log(await bucket.get('ttl'));
   // => 3600
-});
-
+};
 ```
 
 ## Tests
