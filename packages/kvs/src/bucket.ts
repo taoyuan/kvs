@@ -9,7 +9,7 @@ export interface BucketOptions {
   load?: Loader;
 }
 
-export class Bucket {
+export class Bucket<T = Record<string, any>> {
   namespace: string;
   adapter: Adapter;
   protected ttl: number;
@@ -31,20 +31,22 @@ export class Bucket {
     this.delimiter = options.delimiter ?? ':';
   }
 
-  fullkey(key: string): string {
-    if (!this.namespace) return key;
+  fullkey<K extends keyof T>(key: K): string {
+    if (!this.namespace) {
+      return key as string;
+    }
     return this.namespace + this.delimiter + key;
   }
 
-  async has(key: string) {
+  async has<K extends keyof T>(key: K) {
     return this.adapter.has(this.fullkey(key));
   }
 
-  async exists(key: string) {
+  async exists<K extends keyof T>(key: K) {
     return this.adapter.has(this.fullkey(key));
   }
 
-  async get(key: string, query?: any): Promise<any> {
+  async get<K extends keyof T>(key: K, query?: any): Promise<T[K]> {
     const fullkey = this.fullkey(key);
     let value = await this.adapter.get(fullkey);
 
@@ -67,33 +69,40 @@ export class Bucket {
     return value;
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set<K extends keyof T>(
+    key: K,
+    value: T[K],
+    ttl?: number,
+  ): Promise<void> {
     return this.adapter.set(this.fullkey(key), value, ttl ?? this.ttl);
   }
 
-  async getset(key: string, value: any): Promise<any> {
+  async getset<K extends keyof T>(
+    key: K,
+    value: T[K],
+  ): Promise<T[K] | undefined> {
     return this.adapter.getset(this.fullkey(key), value);
   }
 
-  async getdel(key: string): Promise<any> {
+  async getdel<K extends keyof T>(key: K): Promise<T[K] | undefined> {
     return this.adapter.getdel(this.fullkey(key));
   }
 
-  async del(key: string): Promise<number> {
+  async del<K extends keyof T>(key: K): Promise<number> {
     return this.adapter.del(this.fullkey(key));
   }
 
-  async keys(pattern?: string): Promise<string[]> {
-    const patternToUse = pattern ?? '*';
+  async keys<K extends keyof T>(pattern?: string): Promise<K[]> {
+    pattern = pattern ?? '*';
     const len = this.namespace.length + 1;
-    const keys = await this.adapter.keys(this.namespace + ':' + patternToUse);
+    const keys = await this.adapter.keys(this.namespace + ':' + pattern);
     if (!keys) {
       return [];
     }
     for (let i = 0, l = keys.length; i < l; i++) {
       keys[i] = keys[i].substr(len);
     }
-    return keys;
+    return <K[]>(keys as unknown);
   }
 
   async clear(pattern?: string): Promise<number> {

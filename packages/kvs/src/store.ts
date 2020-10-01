@@ -67,15 +67,17 @@ export class Store extends EventEmitter {
     };
   }
 
-  async createBucket(options: BucketOptions): Promise<Bucket>;
-  async createBucket(
+  async createBucket<T = Record<string, any>>(
+    options: BucketOptions,
+  ): Promise<Bucket<T>>;
+  async createBucket<T = Record<string, any>>(
     namespace: string,
     options?: BucketOptions,
-  ): Promise<Bucket>;
-  async createBucket(
+  ): Promise<Bucket<T>>;
+  async createBucket<T = Record<string, any>>(
     namespace: string | BucketOptions,
     options?: BucketOptions,
-  ): Promise<Bucket> {
+  ): Promise<Bucket<T>> {
     if (typeof namespace !== 'string') {
       options = namespace;
       namespace = '';
@@ -86,12 +88,14 @@ export class Store extends EventEmitter {
     return new Bucket(namespace, this.adapter, options);
   }
 
-  async bucket(namespace?: string): Promise<Bucket> {
+  async bucket<T = Record<string, any>>(
+    namespace?: string,
+  ): Promise<Bucket<T>> {
     namespace = namespace ?? this.defaultNamespace;
     if (!this.buckets[namespace]) {
       this.buckets[namespace] = await this.createBucket(namespace);
     }
-    return this.buckets[namespace];
+    return <Bucket<T>>this.buckets[namespace];
   }
 
   /**
