@@ -106,7 +106,7 @@ export function kvsTestBuckets(provider: Function) {
           expected.push(k);
         }
 
-        const bucket2 = await store.bucket(random.string(8));
+        const bucket2 = store.bucket(random.string(8));
         for (let i = 0; i < 10; i++) {
           const k = random.string();
           await bucket2.set(k, genValue());
@@ -117,7 +117,7 @@ export function kvsTestBuckets(provider: Function) {
       });
 
       it('clear()', async () => {
-        const bucket2 = await store.bucket(random.string(8));
+        const bucket2 = store.bucket(random.string(8));
 
         await bucket.set('key', value);
         await bucket2.set('key', value);

@@ -28,7 +28,7 @@ describe('Memory', function () {
       ttl = 0.1;
       adapter = store.adapter;
 
-      bucket = await store.createBucket({
+      bucket = store.createBucket({
         ttl: ttl,
         // eslint-disable-next-line no-shadow
         load: name => methods.getWidget(name ?? 'unknown'),
@@ -112,7 +112,7 @@ describe('Memory', function () {
 
     it('should dump and load data', async function () {
       let store = Store.create(Memory);
-      const bucket = await store.bucket('test');
+      const bucket = store.bucket('test');
       await bucket.set(key, value);
       const data = (store.adapter as Memory).dump();
       store = Store.create(Memory, {data});

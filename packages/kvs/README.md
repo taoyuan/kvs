@@ -35,7 +35,7 @@ const TTL = 100;
 const store = Store.create('memory');
 
 (async () => {
-  const bucket1 = await store.bucket({ttl: TTL /*seconds*/});
+  const bucket1 = store.bucket({ttl: TTL /*seconds*/});
   // const memoryBucket = await memoryStore.createBucket({max: 100, ttl: 10/*seconds*/});
 
   await bucket1.set('foo', 'bar');
@@ -47,7 +47,7 @@ const store = Store.create('memory');
   const key = '#' + userId; // for test if key is not the parameter (user_id) to load.
 
   // Using namespace "user"
-  const bucket2 = await store.bucket('user', {
+  const bucket2 = store.bucket('user', {
     ttl: TTL /*seconds*/,
 
     // method to load a thing if it's not in the bucket.
@@ -96,7 +96,7 @@ interface Settings {
 
 async () => {
   const store = new Store('memory');
-  const bucket = await store.bucket<Settings>('settings');
+  const bucket = store.bucket<Settings>('settings');
   await bucket.set('name', 'foo');
   await bucket.set('ttl', '3600');
 
