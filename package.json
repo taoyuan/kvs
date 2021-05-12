@@ -44,15 +44,14 @@
     "mocha": "tib-mocha --lang en_US.UTF-8 \"packages/*/dist/__tests__/**/*.js\" \"examples/*/dist/__tests__/**/*.js\"",
     "posttest": "npm run lint"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/travis-cli": "^11.0.0",
     "@tib/bsert": "^0.2.1",
     "@tib/build": "^6.3.4",
     "@tib/eslint-config": "^8.2.4",
     "@tib/testlab": "^3.4.4",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "@commitlint/travis-cli": "^11.0.0",
     "@types/mocha": "^8.0.3",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
