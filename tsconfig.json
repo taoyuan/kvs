@@ -1,15 +1,7 @@
 {
-  "extends": "@tib/build/config/tsconfig.common.json",
+  "extends": "@nutol/build/config/tsconfig.common.json",
   "compilerOptions": {
-    "composite": true
-  },
-  "references": [
-    {
-      "path": "packages/kvs-testlab/tsconfig.json"
-    },
-    {
-      "path": "packages/kvs/tsconfig.json"
-    }
-  ],
-  "files": []
+    "composite": true,
+    "lib": ["ES2022"],
+  }
 }

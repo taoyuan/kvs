@@ -1,4 +1,3 @@
-import {expect} from '@tib/testlab';
 import {Store} from '..';
 
 export type StoreProvider = () => Promise<Store>;
@@ -17,8 +16,8 @@ export const random = {
 };
 
 export function assertBetween(actual: number, lower: number, upper: number) {
-  expect(actual).greaterThanOrEqual(lower);
-  expect(actual).lessThanOrEqual(upper);
+  expect(actual).toBeGreaterThanOrEqual(lower);
+  expect(actual).toBeLessThanOrEqual(upper);
 }
 
 export function assertWithin(actual: number, expected: number, delta: number) {

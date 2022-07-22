@@ -1,4 +1,3 @@
-import {expect} from '@tib/testlab';
 import {random} from './support';
 
 export function kvsTestBuckets(provider: Function) {
@@ -26,7 +25,7 @@ export function kvsTestBuckets(provider: Function) {
     genValue: () => string,
     options: Record<string, any>,
   ) {
-    context('bucket ' + name, function () {
+    describe('bucket ' + name, function () {
       let store: any;
       let bucket: any;
       let key: string;
@@ -46,9 +45,9 @@ export function kvsTestBuckets(provider: Function) {
 
       describe('has()', function () {
         it('should has worked', async function () {
-          expect(await bucket.has(key)).equal(0);
+          expect(await bucket.has(key)).toBe(0);
           await bucket.set(key, value);
-          expect(await bucket.has(key)).equal(1);
+          expect(await bucket.has(key)).toBe(1);
         });
       });
 
@@ -56,7 +55,7 @@ export function kvsTestBuckets(provider: Function) {
         it('should set and get data in bucket', async () => {
           await bucket.set(key, value);
           const result = await bucket.get(key);
-          expect(result).deepEqual(value);
+          expect(result).toEqual(value);
         });
       });
 
@@ -65,19 +64,19 @@ export function kvsTestBuckets(provider: Function) {
 
         it('should delete data from bucket', async () => {
           let result = await bucket.get(key);
-          expect(result).deepEqual(value);
+          expect(result).toEqual(value);
           await bucket.del(key);
           await bucket.get(key);
           result = await bucket.get(key);
-          expect(result).not.ok();
+          expect(result).toBeFalsy();
         });
 
         it('should delete data without a callback', async () => {
           let result = await bucket.get(key);
-          expect(result).deepEqual(value);
+          expect(result).toEqual(value);
           await bucket.del(key);
           result = await bucket.get(key);
-          expect(result).not.ok();
+          expect(result).toBeFalsy();
         });
       });
 
@@ -85,17 +84,17 @@ export function kvsTestBuckets(provider: Function) {
         await bucket.set(key, value);
         const newValue = genValue();
         let result = await bucket.getset(key, newValue);
-        expect(value).deepEqual(result);
+        expect(value).toEqual(result);
         result = await bucket.get(key);
-        expect(newValue).deepEqual(result);
+        expect(newValue).toEqual(result);
       });
 
       it('getdel()', async () => {
         await bucket.set(key, value);
         let result = await bucket.getdel(key);
-        expect(value).deepEqual(result);
+        expect(value).toEqual(result);
         result = await bucket.get(key);
-        expect(result).not.ok();
+        expect(result).toBeFalsy();
       });
 
       it('keys()', async () => {
@@ -113,7 +112,7 @@ export function kvsTestBuckets(provider: Function) {
         }
 
         const keys = await bucket.keys();
-        expect(expected).containDeep(keys);
+        expect(expected.sort()).toEqual(keys.sort());
       });
 
       it('clear()', async () => {
@@ -127,8 +126,8 @@ export function kvsTestBuckets(provider: Function) {
         const val1 = await bucket.get('key');
         const val2 = await bucket2.get('key');
 
-        expect(val1).not.ok();
-        expect(val2).ok();
+        expect(val1).toBeFalsy();
+        expect(val2).toBeTruthy();
       });
     });
   }

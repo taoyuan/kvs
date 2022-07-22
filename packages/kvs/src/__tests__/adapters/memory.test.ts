@@ -1,10 +1,9 @@
 import delay from 'delay';
-import {expect, sinon} from '@tib/testlab';
-import {Adapter} from '../../types';
-import {Store} from '../../store';
-import {Bucket} from '../../bucket';
-import {random} from '../support';
 import Memory from '../../adapters/memory';
+import {Bucket} from '../../bucket';
+import {Store} from '../../store';
+import {Adapter} from '../../types';
+import {random} from '../support';
 
 const createStore = () => Store.create('memory');
 
@@ -30,7 +29,7 @@ describe('Memory', function () {
 
       bucket = store.createBucket({
         ttl: ttl,
-        // eslint-disable-next-line no-shadow
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         load: name => methods.getWidget(name ?? 'unknown'),
       });
       key = random.string(20);
@@ -43,65 +42,67 @@ describe('Memory', function () {
 
     it('should call back with the result of a function', async () => {
       const widget = await bucket.get(key, name);
-      expect(widget).deepEqual({name});
+      expect(widget).toEqual({name});
     });
 
     it('should retrieve data from memory when available', async () => {
       let widget = await bucket.get(key, name);
-      expect(widget).ok();
+      expect(widget).toBeTruthy();
       const result = await adapter.get(bucket.fullkey(key));
-      expect(result).ok();
+      expect(result).toBeTruthy();
 
-      const spyGet = sinon.spy(adapter, 'get');
-      const spyGetWidget = sinon.spy(methods, 'getWidget');
+      const spyGet = jest.spyOn(adapter, 'get');
+      const spyGetWidget = jest.spyOn(methods, 'getWidget');
 
       widget = await bucket.get(key, name);
-      expect(widget).deepEqual({name});
-      expect(spyGet.calledWith(bucket.fullkey(key))).ok();
-      expect(spyGetWidget.called).not.ok();
-      spyGet.restore();
-      spyGetWidget.restore();
+      expect(widget).toEqual({name});
+      expect(spyGet).toBeCalledWith(bucket.fullkey(key));
+      expect(spyGetWidget).not.toBeCalled();
+      spyGet.mockRestore();
+      spyGetWidget.mockRestore();
     });
 
     it('should expire cached result after ttl seconds', async () => {
       let widget = await bucket.get(key, name);
-      expect(widget).deepEqual({name});
+      expect(widget).toEqual({name});
       const result = await adapter.get(bucket.fullkey(key));
-      expect(result).ok();
+      expect(result).toBeTruthy();
 
-      const spyGetWidget = sinon.spy(methods, 'getWidget');
+      const spyGetWidget = jest.spyOn(methods, 'getWidget');
 
       await delay(ttl * 1000 + 10);
       widget = await bucket.get(name, name);
-      expect(spyGetWidget.called).ok();
-      expect(widget).deepEqual({name});
-      spyGetWidget.restore();
+      expect(spyGetWidget).toBeCalled();
+      expect(widget).toEqual({name});
+      spyGetWidget.mockRestore();
     });
 
-    context('when store.get() calls back with an error', function () {
+    describe('when store.get() calls back with an error', function () {
       it('should bubble up that error', async () => {
         const fakeError = new Error(random.string());
 
-        const spyGet = sinon.stub(adapter, 'get').callsFake(async () => {
-          throw fakeError;
-        });
+        const spyGet = jest
+          .spyOn(adapter, 'get')
+          .mockImplementation(async () => {
+            throw fakeError;
+          });
 
-        await expect(bucket.get(key, name)).rejectedWith(fakeError.message);
+        await expect(bucket.get(key, name)).rejects.toThrow(fakeError.message);
 
-        spyGet.restore();
+        spyGet.mockRestore();
       });
     });
 
-    context('when store.set() calls back with an error', function () {
+    describe('when store.set() calls back with an error', function () {
       it('should bubble up that error', async () => {
         const fakeError = new Error(random.string());
 
-        const spyGet = sinon.stub(adapter, 'set').callsFake(() => {
+        const spyGet = jest.spyOn(adapter, 'get').mockImplementation(() => {
           throw fakeError;
         });
 
-        await expect(bucket.get(key, name)).rejectedWith(fakeError.message);
-        spyGet.restore();
+        await expect(bucket.get(key, name)).rejects.toThrow(fakeError.message);
+        spyGet.mockRestore();
       });
     });
   });
@@ -116,7 +117,7 @@ describe('Memory', function () {
       await bucket.set(key, value);
       const data = (store.adapter as Memory).dump();
       store = Store.create(Memory, {data});
-      expect(data).deepEqual((store.adapter as Memory).dump());
+      expect(data).toEqual((store.adapter as Memory).dump());
     });
   });
 });

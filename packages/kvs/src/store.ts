@@ -1,8 +1,8 @@
 import {EventEmitter} from 'events';
+import {createAdapter} from './adapters';
+import {Bucket, BucketOptions} from './bucket';
 import {AdapterOptions} from './options';
 import {Adapter, AdapterCtor, isAdapter, isConstructor} from './types';
-import {Bucket, BucketOptions} from './bucket';
-import {createAdapter} from './adapters';
 
 export type StoreOptions = AdapterOptions & {
   name?: string;

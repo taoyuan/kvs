@@ -11,26 +11,23 @@
   "author": "ty ",
   "license": "MIT ",
   "scripts": {
-    "acceptance": "tib-mocha \"dist/__tests__/acceptance/**/*.js\"",
-    "build": "tib-tsc",
-    "clean": "tib-clean kvs-testlab*.tgz dist *.tsbuildinfo package",
-    "pretest": "npm run build",
-    "test": "tib-mocha \"dist/__tests__/**/*.js\"",
-    "unit": "tib-mocha \"dist/__tests__/unit/**/*.js\"",
-    "verify": "npm pack && tar xf kvs-testlab*.tgz && tree package && npm run clean"
+    "build": "nb-tsc",
+    "clean": "nb-clean 'kvs-testlab*.tgz' 'dist/*' '*.tsbuildinfo' 'package'",
+    "pretest": "yarn run clean && yarn run build",
+    "test": "yarn run pretest && yarn run jest",
+    "jest": "jest"
   },
   "dependencies": {
-    "tslib": "^2.2.0"
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
-    "@tib/build": "^6.4.0",
-    "@tib/eslint-config": "^8.3.0",
-    "@tib/testlab": "^3.5.0",
-    "@types/mocha": "^8.2.2",
-    "@types/node": "^15.0.2",
+    "@nutol/build": "^0.2.10",
+    "@nutol/eslint-config": "^0.2.5",
+    "@types/jest": "^28.1.6",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.0.6",
     "cross-env": "^7.0.3",
-    "mocha": "^8.4.0",
-    "np": "^7.5.0"
+    "mocha": "^10.0.0"
   },
   "files": [
     "README.md",

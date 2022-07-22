@@ -1,5 +1,4 @@
 import {Store} from '../store';
-import {expect} from '@tib/testlab';
 
 describe('bucket', function () {
   it('should work with typing', async function () {
@@ -11,7 +10,7 @@ describe('bucket', function () {
     const bucket = store.bucket<Options>('test');
     await bucket.set('a', 'a');
     await bucket.set('b', 1);
-    expect(await bucket.get('a')).equal('a');
-    expect(await bucket.get('b')).equal(1);
+    expect(await bucket.get('a')).toBe('a');
+    expect(await bucket.get('b')).toBe(1);
   });
 });

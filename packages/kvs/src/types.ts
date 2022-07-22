@@ -21,7 +21,7 @@ export interface Adapter {
 }
 
 export interface AdapterCtor<
-  T extends Record<string, any> = Record<string, any>
+  T extends Record<string, any> = Record<string, any>,
 > {
   new (options: T): Adapter;
 }

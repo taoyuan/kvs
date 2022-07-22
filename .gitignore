@@ -1,16 +1,31 @@
+# Cache
+.eslintcache
 .idea
-lerna-debug.log
+.npm
+.vscode
+.yarnclean
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+backups
 node_modules
 npm-debug.log
 .DS_Store
 coverage
 .nyc_output
 **/*.tgz
-packages/*/dist
-examples/*/dist
 **/package
 .sandbox
 *.tsbuildinfo
+junit.xml
+*.db
 
-# ESLint cache
-.eslintcache
+# ignore dist conetents but dist directory for `flat` modules
+packages/*/dist/*

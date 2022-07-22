@@ -35,7 +35,7 @@ export class Bucket<T = Record<string, any>> {
     if (!this.namespace) {
       return key as string;
     }
-    return this.namespace + this.delimiter + key;
+    return this.namespace + this.delimiter + key.toString();
   }
 
   async has<K extends keyof T>(key: K) {

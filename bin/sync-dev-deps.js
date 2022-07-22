@@ -23,8 +23,10 @@ async function syncDevDeps() {
     'packages/eslint-config/package.json',
   )).dependencies;
 
-  const buildDeps = require(path.join(rootPath, 'packages/build/package.json'))
-    .dependencies;
+  const buildDeps = require(path.join(
+    rootPath,
+    'packages/build/package.json',
+  )).dependencies;
 
   const deps = [
     '@typescript-eslint/eslint-plugin',
